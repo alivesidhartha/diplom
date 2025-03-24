@@ -1,0 +1,24 @@
+- name: Install Kibana from local repo
+  hosts: kibana
+  become: yes
+  tasks:
+    - name: Add Kibana local repo
+      copy:
+        dest: /etc/apt/sources.list.d/kibana-local.list
+        content: |
+          deb [trusted=yes] http://77.239.101.135/repos/kibana/ ./
+
+    - name: Update apt cache
+      apt:
+        update_cache: yes
+
+    - name: Install Kibana
+      apt:
+        name: kibana
+        state: present
+
+    - name: Enable and start Kibana service
+      systemd:
+        name: kibana
+        enabled: yes
+        state: started

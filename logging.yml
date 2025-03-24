@@ -1,0 +1,26 @@
+---
+- name: Установить Elasticsearch на хост logging
+  hosts: logging
+  become: yes
+
+  tasks:
+    - name: Добавить локальный репозиторий Elasticsearch
+      apt_repository:
+        repo: "deb [trusted=yes] http://77.239.101.135/repos/elasticsearch ./"
+        filename: elasticsearch-local
+        state: present
+
+    - name: Обновить apt-кеш
+      apt:
+        update_cache: yes
+
+    - name: Установить Elasticsearch
+      apt:
+        name: elasticsearch
+        state: present
+
+    - name: Включить и запустить службу Elasticsearch
+      service:
+        name: elasticsearch
+        state: started
+        enabled: yes

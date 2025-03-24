@@ -1,0 +1,64 @@
+---
+- name: Установка и настройка Nginx
+  hosts: web
+  become: yes
+  tasks:
+
+    - name: Обновление списка пакетов
+      apt:
+        update_cache: yes
+
+    - name: Установка Nginx
+      apt:
+        name: nginx
+        state: present
+
+    - name: Запуск и включение Nginx в автозагрузку
+      systemd:
+        name: nginx
+        state: started
+        enabled: yes
+
+    - name: Разрешаем HTTP и HTTPS в UFW
+      command: ufw allow 'Nginx Full'
+      ignore_errors: yes
+
+    - name: Ограничиваем доступ к Nginx только из внутренней сети
+      lineinfile:
+        path: /etc/nginx/sites-available/default
+        insertafter: "server_name _;"
+        line: "        allow 192.168.0.0/16;"
+        state: present
+      notify: Restart Nginx
+
+    - name: Очистка стандартной директории Nginx
+      file:
+        path: /var/www/html
+        state: absent
+
+    - name: Создать директорию для сайта
+      file:
+        path: /var/www/html
+        state: directory
+        owner: www-data
+        group: www-data
+        mode: '0755'
+
+    - name: Создать страницу
+      copy:
+        dest: /var/www/html/index.html
+        content: |
+          <html>
+          <body style="margin:0; display:flex; justify-content:center; align-items:center; height:100vh;">
+            <img src="https://shorturl.at/97KWR" alt="Греф">
+          </body>
+          </html>
+        owner: www-data
+        group: www-data
+        mode: '0644'
+
+  handlers:
+    - name: Restart Nginx
+      systemd:
+        name: nginx
+        state: restarted
