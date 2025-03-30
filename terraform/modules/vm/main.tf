@@ -16,19 +16,20 @@ resource "yandex_compute_instance" "bastion" {
 
     boot_disk {
         initialize_params {
-            image_id = data.yandex_compute_image.ubuntu_2204_lts.image_id
+            image_id = var.image_id
             type = "network-hdd"
             size = 10
         }
     }
 
     network_interface {
-        subnet_id = yandex_vpc_subnet.private_subnet_a.id
+        subnet_id = var.subnet_a_id
+
         nat = true
     }
 
     metadata = {
-        user-data = file("./cloud-init.yml")
+        user-data = file(var.cloud_init_file)
         serial-port-enable = 1
     }
 
@@ -49,18 +50,19 @@ resource "yandex_compute_instance" "web-a" {
 
     boot_disk {
         initialize_params {
-            image_id = data.yandex_compute_image.ubuntu_2204_lts.image_id
+            image_id = var.image_id
             type = "network-hdd"
             size = 10
         }
     }
 
     network_interface {
-        subnet_id = yandex_vpc_subnet.private_subnet_a.id
+        subnet_id = var.subnet_a_id
+
     }
 
     metadata = {
-        user-data = file("./cloud-init.yml")
+        user-data = file(var.cloud_init_file)
         serial-port-enable = 1
     }
 
@@ -81,18 +83,19 @@ resource "yandex_compute_instance" "web-b" {
 
     boot_disk {
         initialize_params {
-            image_id = data.yandex_compute_image.ubuntu_2204_lts.image_id
+            image_id = var.image_id
             type = "network-hdd"
             size = 10
         }
     }
 
     network_interface {
-        subnet_id = yandex_vpc_subnet.private_subnet_b.id
+        subnet_id = var.subnet_b_id
+
     }
 
     metadata = {
-        user-data = file("./cloud-init.yml")
+        user-data = file(var.cloud_init_file)
         serial-port-enable = 1
     }
 
@@ -113,19 +116,19 @@ resource "yandex_compute_instance" "monitoring" {
 
     boot_disk {
         initialize_params {
-            image_id = data.yandex_compute_image.ubuntu_2204_lts.image_id
+            image_id = var.image_id
             size = 20
             type = "network-hdd"
         }
     }
 
     network_interface {
-        subnet_id = yandex_vpc_subnet.private_subnet_a.id
+        subnet_id = var.subnet_a_id
         nat = true
     }
 
     metadata = {
-    user-data = file("./cloud-init.yml")
+    user-data = file(var.cloud_init_file)
     serial-port-enable = 1
   }
 
@@ -147,18 +150,18 @@ resource "yandex_compute_instance" "monitoring" {
 
     boot_disk {
         initialize_params {
-            image_id = data.yandex_compute_image.ubuntu_2204_lts.image_id
+            image_id = var.image_id
             size = 20
             type = "network-hdd"
         }
     }
 
     network_interface {
-        subnet_id = yandex_vpc_subnet.private_subnet_a.id
+        subnet_id = var.subnet_a_id
     }
 
     metadata = {
-    user-data = file("./cloud-init.yml")
+    user-data = file(var.cloud_init_file)
     serial-port-enable = 1
     }
 
@@ -180,19 +183,19 @@ resource "yandex_compute_instance" "monitoring" {
 
     boot_disk {
         initialize_params {
-            image_id = data.yandex_compute_image.ubuntu_2204_lts.image_id
+            image_id = var.image_id
             size = 20
             type = "network-hdd"
         }
     }
 
     network_interface {
-        subnet_id = yandex_vpc_subnet.private_subnet_a.id
+        subnet_id = var.subnet_a_id
         nat = true
     }
 
     metadata = {
-    user-data = file("./cloud-init.yml")
+    user-data = file(var.cloud_init_file)
     serial-port-enable = 1
   }
 
